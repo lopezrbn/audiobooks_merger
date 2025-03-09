@@ -1,7 +1,10 @@
 # Data folders
-input_files/
-output_files/
-temp_files/
+input_files/*
+!input_files/.gitkeep
+output_files/*
+!output_files/.gitkeep
+temp_files/*
+!temp_files/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
