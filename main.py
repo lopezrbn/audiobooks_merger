@@ -18,15 +18,19 @@ def main(BOOK_METADATA):
     for path in PATHS_DIRS.values():
         os.makedirs(path, exist_ok=True)
 
-    cover_filename = [file for file in os.listdir(PATHS_DIRS['input_files']) if (file.endswith(".jpg") or file.endswith(".png"))][0]
-
     PATHS_FILES = {
-        "cover_image": os.path.join(PATHS_DIRS['input_files'], cover_filename),
         "output_file": os.path.join(PATHS_DIRS['output_files'], f"{BOOK_METADATA['title']}.m4b"),
         "output_file_temp": os.path.join(PATHS_DIRS['temp_files'], f"{BOOK_METADATA['title']}.m4b"),
         "chapters_list": os.path.join(PATHS_DIRS['temp_files'], "chapters_list.txt"),
         "chapters_metadata": os.path.join(PATHS_DIRS['temp_files'], "chapters_metadata.txt"),
     }
+
+    try:
+        cover_filename = [file for file in os.listdir(PATHS_DIRS['input_files']) if (file.endswith(".jpg") or file.endswith(".png"))][0]
+        PATHS_FILES["cover_image"] = os.path.join(PATHS_DIRS['input_files'], cover_filename)
+    except IndexError:
+        PATHS_FILES["cover_image"] = None
+
 
     def execute_command(command):
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
@@ -125,9 +129,10 @@ def main(BOOK_METADATA):
     #                           Add cover image                               #
     ###########################################################################
 
-    command = ["ffmpeg", "-y", "-i", PATHS_FILES["output_file"], "-i", PATHS_FILES["cover_image"], "-map", "0:a", "-map", "1:v", "-c", "copy", "-metadata:s:v", "title='Cover'", "-metadata:s:v", "comment='Cover (front)'", "-disposition:v", "attached_pic", PATHS_FILES["output_file_temp"]]
-    execute_command(command)
-    os.rename(PATHS_FILES["output_file_temp"], PATHS_FILES["output_file"])
+    if PATHS_FILES["cover_image"] is not None:
+        command = ["ffmpeg", "-y", "-i", PATHS_FILES["output_file"], "-i", PATHS_FILES["cover_image"], "-map", "0:a", "-map", "1:v", "-c", "copy", "-metadata:s:v", "title='Cover'", "-metadata:s:v", "comment='Cover (front)'", "-disposition:v", "attached_pic", PATHS_FILES["output_file_temp"]]
+        execute_command(command)
+        os.rename(PATHS_FILES["output_file_temp"], PATHS_FILES["output_file"])
 
     
     ###########################################################################
