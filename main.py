@@ -9,7 +9,7 @@ def main(BOOK_METADATA):
     PATH_BASE = os.getcwd()
     PATHS_DIRS = {
         "input_files": os.path.join(PATH_BASE, "input_files", BOOK_METADATA['title']),
-        "output_files": os.path.join(PATH_BASE, "output_files", BOOK_METADATA['title']),
+        "output_files": os.path.join(PATH_BASE, "output_files"),
         "temp_files": os.path.join(PATH_BASE, "temp_files")
     }
 
@@ -90,12 +90,13 @@ def main(BOOK_METADATA):
 
             for chapter in chapters_list:
                 duration = int(get_chapter_duration(os.path.join(PATHS_DIRS['input_files'], chapter)) * 1_000_000)
+                chapter_without_extension = os.path.splitext(chapter)[0]
                 file.write("[CHAPTER]\n")
                 file.write("TIMEBASE=1/1000000\n")
                 file.write(f"START={accumulated_duration}\n")
                 accumulated_duration += duration
                 file.write(f"END={accumulated_duration}\n")
-                file.write(f"title={chapter}\n\n")
+                file.write(f"title={chapter_without_extension}\n\n")
 
     generate_chapters_metadata()
 
