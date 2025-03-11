@@ -29,7 +29,7 @@ def main(BOOK_METADATA):
     try:
         cover_filename = [
             file for file in os.listdir(PATHS_DIRS['input_files'])
-            if file.endswith((".jpg", ".png"))
+            if file.endswith((".jpg", "jpeg", ".png"))
         ][0]
         PATHS_FILES["cover_image"] = os.path.join(PATHS_DIRS['input_files'], cover_filename)
     except IndexError:
@@ -42,10 +42,10 @@ def main(BOOK_METADATA):
             print(line, end='')
         return process.returncode
 
-    # Generate sorted list of chapter audio files
-    chapters_list = sorted([file for file in os.listdir(PATHS_DIRS['input_files']) if file.endswith(".mp3")])
+    # # Generate sorted list of chapter audio files
+    chapters_list = sorted([file for file in os.listdir(PATHS_DIRS['input_files']) if file.endswith((".mp3", ".mp4", ".m4a", ".m4b"))])
 
-    # Write chapters list for ffmpeg
+    # # Write chapters list for ffmpeg
     with open(PATHS_FILES["chapters_list"], "w") as f:
         for chapter in chapters_list:
             f.write(f"file '{os.path.join(PATHS_DIRS['input_files'], chapter)}'\n")
